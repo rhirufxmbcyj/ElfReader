@@ -1,0 +1,6 @@
+FILE(GLOB SRC_FILE *.c *.cpp)
+FILE(GLOB RC_FILE *.rc)
+FILE(GLOB HEADER_FILE *.h)
+
+add_executable(ElfReader ${SRC_FILE} ${RC_FILE} ${HEADER_FILE})
+set_target_properties(ElfReader PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS /SAFESEH:NO")
