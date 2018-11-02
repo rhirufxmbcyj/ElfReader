@@ -1,27 +1,28 @@
-#ifndef ELF_READER_DLG_H
+ï»¿#ifndef ELF_READER_DLG_H
 #define ELF_READER_DLG_H
 
 #include <define.h>
+#include "elf.h"
 #include "afxcmn.h"
 
 
-// ElfReaderDlg ¶Ô»°¿ò
+// ElfReaderDlg å¯¹è¯æ¡†
 
 class ElfReaderDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(ElfReaderDlg)
 
 public:
-	ElfReaderDlg(CWnd* pParent = NULL);   // ±ê×¼¹¹Ôìº¯Êı
+	ElfReaderDlg(CWnd* pParent = NULL);   // æ ‡å‡†æ„é€ å‡½æ•°
 	virtual ~ElfReaderDlg();
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_DIALOG1 };
 #endif
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 	BOOL PreTranslateMessage(MSG* pMsg);
 	DECLARE_MESSAGE_MAP()
 public:
@@ -29,9 +30,14 @@ public:
 	CTreeCtrl m_tree;
 	CString m_FileName;
 	virtual BOOL OnInitDialog();
+	int CheckFileFormat();
+	void CleanUpData();
 	afx_msg void OnBnClickedButton1();
 	afx_msg LRESULT OnStartAnalyze(WPARAM wParam,LPARAM lParam);
 	afx_msg void OnDropFiles(HDROP hDropInfo);
+private:
+	char *file;
+	DWORD dwFileSize;
 };
 
 #endif

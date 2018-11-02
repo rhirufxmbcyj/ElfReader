@@ -1,4 +1,4 @@
-// ElfReaderDlg.cpp : ÊµÏÖÎÄ¼ş
+ï»¿// ElfReaderDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -7,7 +7,7 @@
 #include "afxdialogex.h"
 
 
-// ElfReaderDlg ¶Ô»°¿ò
+// ElfReaderDlg å¯¹è¯æ¡†
 
 IMPLEMENT_DYNAMIC(ElfReaderDlg, CDialogEx)
 
@@ -37,12 +37,25 @@ BOOL ElfReaderDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	// TODO:  ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯
-	InitTreeCtrl();
+	// TODO:  åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–
+	file = NULL;
 
 	return TRUE;  
 }
 
+
+int ElfReaderDlg::CheckFileFormat()
+{
+	if (*((DWORD*)file) != *((DWORD*)ELFMAG))
+		return ELF_INVALID_FORMAT;
+	return ELF_OK;
+}
+
+void ElfReaderDlg::CleanUpData()
+{
+	if (file)
+		delete file;
+}
 
 BOOL ElfReaderDlg::PreTranslateMessage(MSG* pMsg)
 {
@@ -60,15 +73,15 @@ BEGIN_MESSAGE_MAP(ElfReaderDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// ElfReaderDlg ÏûÏ¢´¦Àí³ÌĞò
+// ElfReaderDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 
 
 
 void ElfReaderDlg::OnBnClickedButton1()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
-	CFileDialog dlg(TRUE, //TRUEÎªOPEN¶Ô»°¿ò£¬FALSEÎªSAVE AS¶Ô»°¿ò
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
+	CFileDialog dlg(TRUE, //TRUEä¸ºOPENå¯¹è¯æ¡†ï¼ŒFALSEä¸ºSAVE ASå¯¹è¯æ¡†
 		NULL,
 		NULL,
 		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
@@ -76,29 +89,53 @@ void ElfReaderDlg::OnBnClickedButton1()
 		NULL);
 	if (dlg.DoModal() == IDOK)
 	{
-		m_FileName = dlg.GetPathName(); //ÎÄ¼şÃû±£´æÔÚÁËFilePathNameÀï
+		m_FileName = dlg.GetPathName(); //æ–‡ä»¶åä¿å­˜åœ¨äº†FilePathNameé‡Œ
 		PostMessage(WM_START_ANALYZE, NULL, NULL);
 	}
 }
 
 LRESULT ElfReaderDlg::OnStartAnalyze(WPARAM wParam, LPARAM lParam)
 {
-	//¼ì²éÎÄ¼şºÏ·¨ Çå¿Õ¸÷¸öÊı¾İ È»ºó³õÊ¼»¯¿Ø¼ş
+	DWORD dwReadSize = 0;
 	MessageBoxW(m_FileName.GetBuffer());
+	//æ¸…é™¤ä¸Šæ¬¡æ•°æ® è‹¥æ²¡æœ‰ åˆ™ä¸æ¸…é™¤
+	HANDLE hFile = CreateFile(m_FileName.GetBuffer(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		MessageBox(MESSAGE_OPEN_FILE_ERROR, MESSAGE_CAPTION);
+		goto End;
+	}
+	dwFileSize = GetFileSize(hFile, NULL);
+	file = new char[dwFileSize];
+	ReadFile(hFile, file, dwFileSize, &dwReadSize, NULL);
+	if (dwReadSize != dwFileSize)
+	{
+		MessageBox(MESSAGE_READ_FILE_ERROR, MESSAGE_CAPTION);
+		goto End;
+	}
+	//æ£€æŸ¥æ–‡ä»¶åˆæ³•æ€§
+	if (CheckFileFormat() != ELF_OK)
+	{
+		MessageBox(MESSAGE_FILE_FORMAT_ERROR, MESSAGE_CAPTION);
+		goto End;
+	}
+	//åˆå§‹åŒ–æ§ä»¶
+	InitTreeCtrl();
+End:
+	CloseHandle(hFile);
 	return 0;
 }
 
 
 void ElfReaderDlg::OnDropFiles(HDROP hDropInfo)
 {
-	// TODO: ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	// TODO: åœ¨æ­¤æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç å’Œ/æˆ–è°ƒç”¨é»˜è®¤å€¼
 	int DropCount=DragQueryFile(hDropInfo,-1,NULL,0);
-	//È¡µÃ±»ÍÏ¶¯ÎÄ¼şµÄÊıÄ¿	
+	//å–å¾—è¢«æ‹–åŠ¨æ–‡ä»¶çš„æ•°ç›®	
 	WCHAR wcStr[MAX_PATH];		
 	DragQueryFile(hDropInfo,0,wcStr,MAX_PATH);
 	m_FileName = wcStr;
-	DragFinish(hDropInfo);  
-	//ÍÏ·Å½áÊøºó,ÊÍ·ÅÄÚ´æ
+	DragFinish(hDropInfo);
 	PostMessage(WM_START_ANALYZE, NULL, NULL);
 	CDialogEx::OnDropFiles(hDropInfo);
 }
