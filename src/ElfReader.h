@@ -1,4 +1,4 @@
-#ifndef ELF_READER_H
+﻿#ifndef ELF_READER_H
 #define ELF_READER_H
 
 #ifndef __AFXWIN_H__
