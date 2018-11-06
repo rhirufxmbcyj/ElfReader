@@ -7,6 +7,8 @@
 #include "afxdialogex.h"
 
 
+//tree的item可以存放信息 SetItemData()函数   可以用一个结构体保存多个信息 参数存入结构体的地址
+
 // ElfReaderDlg 对话框
 
 IMPLEMENT_DYNAMIC(ElfReaderDlg, CDialogEx)
@@ -41,6 +43,14 @@ int ElfReaderDlg::InitElfHeader()
 {
 	HTREEITEM hRoot;
 	hRoot = m_tree.InsertItem(L"Elf Header", TVI_ROOT, TVI_LAST);
+	ITEM_DATA *data = new ITEM_DATA();
+	data->type = ITEM_DATA_ELF_HEADER;
+	m_tree.SetItemData(hRoot, (DWORD_PTR)data);
+	return ELF_OK;
+}
+
+int ElfReaderDlg::InitElfHeaderWindow()
+{
 	return ELF_OK;
 }
 
@@ -109,7 +119,6 @@ void ElfReaderDlg::OnBnClickedButton1()
 LRESULT ElfReaderDlg::OnStartAnalyze(WPARAM wParam, LPARAM lParam)
 {
 	DWORD dwReadSize = 0;
-	MessageBoxW(m_FileName.GetBuffer());
 	//清除上次数据 若没有 则不清除
 	HANDLE hFile = CreateFile(m_FileName.GetBuffer(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
@@ -158,6 +167,15 @@ void ElfReaderDlg::OnTvnSelchangingTree1(NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
 	HTREEITEM item = pNMTreeView->itemNew.hItem;
-	CString item_name = m_tree.GetItemText(item);
+	ITEM_DATA *item_data = (ITEM_DATA *)m_tree.GetItemData(item);
+	switch (item_data->type)
+	{
+	case ITEM_DATA_ELF_HEADER:
+		InitElfHeaderWindow();
+		break;
+	default:
+		MessageBox(MESSAGE_NO_TYPE, MESSAGE_CAPTION);
+		break;
+	}
 	*pResult = 0;
 }

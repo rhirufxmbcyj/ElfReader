@@ -28,6 +28,7 @@ protected:
 public:
 	void InitTreeCtrl();
 	int InitElfHeader();
+	int InitElfHeaderWindow();
 	CTreeCtrl m_tree;
 	CString m_FileName;
 	virtual BOOL OnInitDialog();
