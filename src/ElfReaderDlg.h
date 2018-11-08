@@ -5,6 +5,18 @@
 #include "elf.h"
 #include "afxcmn.h"
 
+typedef struct _elf_info_t
+{
+	int elf_type;
+	int elf_is_x64;
+	int elf_phoff;
+	int elf_phentsize;
+	int elf_phnum;
+	int elf_shoff;
+	int elf_shentsize;
+	int elf_shnum;
+	int elf_shstrndx;
+}elf_info_t;
 
 // ElfReaderDlg 对话框
 
@@ -26,20 +38,31 @@ protected:
 	BOOL PreTranslateMessage(MSG* pMsg);
 	DECLARE_MESSAGE_MAP()
 public:
+	void PaserElf();
 	void InitTreeCtrl();
 	int InitElfHeader();
 	int InitElfHeaderWindow();
-	CTreeCtrl m_tree;
-	CString m_FileName;
+	int InitElfProgramHeader();
+	int InitElfProgramHeaderWindow();
+	int InitElfSectionHeader();
+	int InitElfSectionHeaderWindow();
+
+
 	virtual BOOL OnInitDialog();
 	int CheckFileFormat();
+
 	void CleanUpData();
+	void DeleteItemData(HTREEITEM hRootitem);
+
 	afx_msg void OnBnClickedButton1();
 	afx_msg LRESULT OnStartAnalyze(WPARAM wParam,LPARAM lParam);
 	afx_msg void OnDropFiles(HDROP hDropInfo);
 private:
 	char *file;
 	DWORD dwFileSize;
+	CTreeCtrl m_tree;
+	CString m_FileName;
+	elf_info_t elf_info;
 public:
 	afx_msg void OnTvnSelchangingTree1(NMHDR *pNMHDR, LRESULT *pResult);
 };

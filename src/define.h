@@ -15,11 +15,15 @@
 #define		ELF_INVALID_FORMAT			-1
 
 
-typedef struct _ITEM_DATA
+typedef struct _item_data_t
 {
 	int type;
 
-}ITEM_DATA;
+}item_data_t;
 
-#define		ITEM_DATA_ELF_HEADER	1
+#define		ITEM_DATA_NOTHING				0	
+#define		ITEM_DATA_ELF_HEADER			1
+#define		ITEM_DATA_ELF_PROGRAM_HEADER	2
+#define		ITEM_DATA_ELF_SECTION_HEADER	3
+
 #endif
