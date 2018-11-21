@@ -1,31 +1,15 @@
-﻿#ifndef ELF_READER_H
-#define ELF_READER_H
+#pragma once
 
-#ifndef __AFXWIN_H__
-	#error "在包含此文件之前包含“stdafx.h”以生成 PCH 文件"
-#endif
+#include <QtWidgets/QMainWindow>
+#include "ui_ElfReader.h"
 
-#include "resource.h"		// 主符号
-
-
-// ElfReaderApp: 
-// 有关此类的实现，请参阅 reverse_tool.cpp
-//
-
-class ElfReaderApp : public CWinApp
+class ElfReader : public QMainWindow
 {
+	Q_OBJECT
+
 public:
-	ElfReaderApp();
+	ElfReader(QWidget *parent = Q_NULLPTR);
 
-// 重写
-public:
-	virtual BOOL InitInstance();
-
-// 实现
-
-	DECLARE_MESSAGE_MAP()
+private:
+	Ui::ElfReaderClass ui;
 };
-
-extern ElfReaderApp theApp;
-#endif // ELF_READER_H
-
