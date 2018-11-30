@@ -22,10 +22,10 @@ qt5_wrap_ui(WRAP_FILES ${UI_FILES})
 
 # 把ui相关文件单建一个文件夹
 source_group("Ui" FILES ${UI_FILES} ${WRAP_FILES})
-add_executable(SerialDemo ${SRC_FILES} ${HEAD_FILES} ${RCC_FILES} ${WRAP_FILES})
+add_executable(ElfReader ${SRC_FILES} ${HEAD_FILES} ${RCC_FILES} ${WRAP_FILES})
 
-target_link_libraries(SerialDemo Qt5::Widgets Qt5::Core Qt5::Gui )
+target_link_libraries(ElfReader Qt5::Widgets Qt5::Core Qt5::Gui )
 
-set_target_properties(SerialDemo PROPERTIES 
+set_target_properties(ElfReader PROPERTIES 
 		WIN32_EXECUTABLE YES
 		LINK_FLAGS "/ENTRY:mainCRTStartup /SAFESEH:NO")
