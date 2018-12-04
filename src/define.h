@@ -16,23 +16,27 @@
 #define		MESSAGE_FILE_FORMAT_ERROR   u8"文件读取失败"
 #define		MESSAGE_NO_TYPE				u8"没有这种类型，请将文件及错误提交issue"
 
+#define		TRUE						 1
+#define		FALSE						 0
 
-#define		ELF_OK						 0
+#define		ELF_SUCCESS					 0
 #define		ELF_INVALID_FORMAT			-1
 
 
-typedef struct _item_data_t
-{
-	int type;
+// typedef struct _item_data_st
+// {
+// 	_item_data_st()
+// 	{
+// 		memset(this, 0, sizeof(_item_data_st));
+// 	}
+// 	int type;
+// }item_data_st;
 
-}item_data_t;
-
-#define		ITEM_DATA_NOTHING				0	
+#define		ITEM_DATA_HEADER_TYPE			Qt::UserRole + 1
 #define		ITEM_DATA_ELF_HEADER			1
 #define		ITEM_DATA_ELF_PROGRAM_HEADER	2
-#define		ITEM_DATA_ELF_SECTION_HEADER	3
-
-#define		MESSAGE_CAPTION     			u8"提示"
-#define		MESSAGE_OPEN_FILE_ERROR			u8"打开文件失败"
+#define		ITEM_DATA_ELF_PROGRAM_ITEM		3
+#define		ITEM_DATA_ELF_SECTION_HEADER	4
+#define		ITEM_DATA_ELF_SECTION_ITEM		5
 
 #endif

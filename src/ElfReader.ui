@@ -124,6 +124,9 @@
        <property name="acceptDrops">
         <bool>false</bool>
        </property>
+       <attribute name="headerVisible">
+        <bool>false</bool>
+       </attribute>
        <column>
         <property name="text">
          <string notr="true">1</string>
