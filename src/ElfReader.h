@@ -55,10 +55,14 @@ public:
 	void clean_up_data();
 	int check_file_format();
 	void parse_elf();
+
 	int init_header_tree();
 	int init_elf_header();
 	int init_program_header();
 	int init_section_header();
+
+	int init_elf_header_info(int offset);
+
 };
 
 #endif
