@@ -48,6 +48,7 @@ public slots:
 	void pushButton_open_clicked();
 	void pushButton_save_clicked();
 	void start_analyze_slot(QString file_name);
+	void header_item_changed_slot(QTreeWidgetItem *current_item, QTreeWidgetItem *pre_item);
 signals:
 	void start_analyze(QString file_name);
 public:

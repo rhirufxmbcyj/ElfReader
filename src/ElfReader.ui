@@ -153,6 +153,9 @@
         <property name="acceptDrops">
          <bool>false</bool>
         </property>
+        <attribute name="headerVisible">
+         <bool>false</bool>
+        </attribute>
         <column>
          <property name="text">
           <string notr="true">1</string>
@@ -209,5 +212,7 @@
  <slots>
   <slot>pushButton_open_clicked()</slot>
   <slot>pushButton_save_clicked()</slot>
+  <slot>item_clicked_slot(QTreeWidgetItem*,int)</slot>
+  <slot>header_item_changed_slot(QTreeWidgetItem*,int)</slot>
  </slots>
 </ui>

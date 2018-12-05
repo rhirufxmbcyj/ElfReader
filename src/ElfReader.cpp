@@ -9,6 +9,7 @@ ElfReader::ElfReader(QWidget *parent)
 	ui.splitter_left->setStretchFactor(1, 5);
 	//¡¨Ω”analyze–≈∫≈≤€
 	QObject::connect(this, SIGNAL(start_analyze(QString)), this, SLOT(start_analyze_slot(QString)));
+	QObject::connect(ui.header_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(header_item_changed_slot(QTreeWidgetItem*, QTreeWidgetItem*)));
 	m_data = NULL;
 }
 
@@ -62,6 +63,11 @@ void ElfReader::start_analyze_slot(QString file_name)
 	init_header_tree();
 End:
 	return;
+}
+
+void ElfReader::header_item_changed_slot(QTreeWidgetItem *current_item, QTreeWidgetItem *pre_item)
+{
+	qDebug() << "item clicked";
 }
 
 void ElfReader::clean_up_data()
@@ -139,11 +145,14 @@ int ElfReader::init_elf_header()
 		elf_header += "(x86)";
 	root->setText(0,elf_header);
 	root->setData(0, ITEM_DATA_HEADER_TYPE, ITEM_DATA_ELF_HEADER);
+	ui.header_tree->setCurrentItem(root);
 	return ELF_SUCCESS;
 }
 
 int ElfReader::init_program_header()
 {
+	if (m_info.elf_phnum == 0)
+		return ELF_SUCCESS;
 	QTreeWidgetItem *root = new QTreeWidgetItem(ui.header_tree);
 	QString tmp;
 	root->setText(0, "Program Header Table");
@@ -160,6 +169,8 @@ int ElfReader::init_program_header()
 
 int ElfReader::init_section_header()
 {
+	if (m_info.elf_shnum == 0)
+		return ELF_SUCCESS;
 	QTreeWidgetItem *root = new QTreeWidgetItem(ui.header_tree);
 	QString tmp;
 	root->setText(0, "Section Header Table");
