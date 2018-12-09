@@ -27,5 +27,5 @@ add_executable(ElfReader ${SRC_FILES} ${HEAD_FILES} ${RCC_FILES} ${WRAP_FILES})
 target_link_libraries(ElfReader Qt5::Widgets Qt5::Core Qt5::Gui )
 
 set_target_properties(ElfReader PROPERTIES 
-		WIN32_EXECUTABLE YES
-		LINK_FLAGS "/ENTRY:mainCRTStartup /SAFESEH:NO")
+        WIN32_EXECUTABLE YES
+        LINK_FLAGS "/ENTRY:mainCRTStartup /SAFESEH:NO")
