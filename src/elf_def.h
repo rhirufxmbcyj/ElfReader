@@ -34,4 +34,7 @@ void elf64_parse_elf(void *pointer);
 
 int elf32_init_elf_header_info(int offset, void *pointer);
 int elf64_init_elf_header_info(int offset, void *pointer);
+
+int elf32_init_program_header_info(int offset, void *pointer);
+int elf64_init_program_header_info(int offset, void *pointer);
 #endif // !ELF_DEF_H
