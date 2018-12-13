@@ -12,8 +12,9 @@
 #define        MESSAGE_CAPTION                u8"提示"
 #define        MESSAGE_OPEN_FILE_ERROR        u8"文件打开失败"
 #define        MESSAGE_READ_FILE_ERROR        u8"文件读取失败"
-#define        MESSAGE_FILE_FORMAT_ERROR   u8"该文件不是合法的ELF文件"
+#define        MESSAGE_FILE_FORMAT_ERROR      u8"该文件不是合法的ELF文件"
 #define        MESSAGE_NO_TYPE                u8"没有这种类型，请将文件及错误提交issue"
+#define        MESSAGE_TYPE_ERROR             u8"类型解析错误，请将文件及错误提交issue"
 
 #define        TRUE                         1
 #define        FALSE                         0

@@ -7,6 +7,8 @@
 
 #ifdef  ELF32
 typedef    Elf32_Ehdr    Elf_Ehdr;
+typedef    Elf32_Phdr    Elf_Phdr;
+typedef    Elf32_Shdr    Elf_Shdr;
 typedef    Elf32_Off     Elf_Off;
 typedef    Elf32_Addr    Elf_Addr;
 typedef    Elf32_Half    Elf_Half;
@@ -19,6 +21,8 @@ typedef    Elf32_Word    Elf_Word;
 
 #ifdef  ELF64
 typedef    Elf64_Ehdr    Elf_Ehdr;
+typedef    Elf64_Phdr    Elf_Phdr;
+typedef    Elf64_Shdr    Elf_Shdr;
 typedef    Elf64_Off     Elf_Off;
 typedef    Elf64_Addr    Elf_Addr;
 typedef    Elf64_Half    Elf_Half;
