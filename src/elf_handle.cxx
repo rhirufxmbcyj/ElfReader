@@ -599,3 +599,15 @@ int ELF_CAT(init_program_header_info)(int offset, void *pointer)
     root->setText(3, QString::number(size));
     return 0;
 }
+
+int ELF_CAT(init_section_header_info)(int offset, void *pointer)
+{
+    ElfReader *pThis = (ElfReader*)pointer;
+    Elf_Phdr *program_header = (Elf_Phdr*)(pThis->m_data + offset);
+    QTreeWidgetItem *root = NULL;
+    QString tmp;
+    int size = 0;
+
+    qDebug() << QString::number(offset,16);
+    return 0;
+}

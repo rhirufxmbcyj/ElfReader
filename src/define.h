@@ -16,21 +16,21 @@
 #define        MESSAGE_NO_TYPE                u8"没有这种类型，请将文件及错误提交issue"
 #define        MESSAGE_TYPE_ERROR             u8"类型解析错误，请将文件及错误提交issue"
 
-#define        TRUE                         1
-#define        FALSE                         0
+#define        TRUE                            1
+#define        FALSE                           0
 
 #define        ELF_SUCCESS                     0
-#define        ELF_INVALID_FORMAT            -1
+#define        ELF_INVALID_FORMAT             -1
 
 //TreeWidget setData用到的宏
 #define        ITEM_DATA_ITEM_TYPE                Qt::UserRole + 1
-#define        ITEM_DATA_ELF_HEADER            1
-#define        ITEM_DATA_ELF_PROGRAM_HEADER    2
-#define        ITEM_DATA_ELF_PROGRAM_ITEM        3
-#define        ITEM_DATA_ELF_SECTION_HEADER    4
-#define        ITEM_DATA_ELF_SECTION_ITEM        5
+#define        ITEM_DATA_ELF_HEADER               1
+#define        ITEM_DATA_ELF_PROGRAM_HEADER       2
+#define        ITEM_DATA_ELF_PROGRAM_ITEM         3
+#define        ITEM_DATA_ELF_SECTION_HEADER       4
+#define        ITEM_DATA_ELF_SECTION_ITEM         5
 
-#define        ITEM_DATA_ITEM_OFFSET            Qt::UserRole + 2
+#define        ITEM_DATA_ITEM_OFFSET              Qt::UserRole + 2
 
 
 

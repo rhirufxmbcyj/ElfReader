@@ -95,6 +95,10 @@ void ElfReader::header_item_changed_slot(QTreeWidgetItem *current_item, QTreeWid
         //≤ª¥¶¿Ì
         break;
     case ITEM_DATA_ELF_SECTION_ITEM:
+        if (m_info.elf_is_x64)
+            elf64_init_section_header_info(offset, this);
+        else
+            elf32_init_section_header_info(offset, this);
         break;
     default:assert(0); break;
     }
