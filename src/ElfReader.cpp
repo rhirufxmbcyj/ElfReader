@@ -9,12 +9,16 @@ ElfReader::ElfReader(QWidget *parent)
     //设置splitter比例 左边占2份 右边占5份
     ui.splitter_left->setStretchFactor(0, 2);
     ui.splitter_left->setStretchFactor(1, 5);
+    ui.splitter_right->setStretchFactor(0, 1);
+    ui.splitter_right->setStretchFactor(1, 1);
     //连接analyze信号槽
     QObject::connect(this, SIGNAL(start_analyze(QString)), this, SLOT(start_analyze_slot(QString)));
     m_data = NULL;
     QStringList info_header;
     info_header << "Name" << "Value" << "Start" << "Size";
     ui.info_tree->setHeaderLabels(info_header);
+    hexEdit = new QHexEdit(ui.hex);
+    //hexEdit->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
 }
 
 void ElfReader::dropEvent(QDropEvent *event)
@@ -29,9 +33,16 @@ void ElfReader::dragEnterEvent(QDragEnterEvent *event)
     event->acceptProposedAction();
 }
 
+void ElfReader::paintEvent(QPaintEvent *event)
+{
+    //hexEdit->setFixedHeight(ui.hex->height());
+    hexEdit->setFixedSize(ui.hex->size());
+    qDebug() << hexEdit->size();
+}
+
 void ElfReader::pushButton_open_clicked()
 {
-    QString file_name = QFileDialog::getOpenFileName(this,u8"请选择一个ELF文件","","",0);
+    QString file_name = QFileDialog::getOpenFileName(this, u8"请选择一个ELF文件", "", "", 0);
     //qDebug() << file_name;
     emit start_analyze(file_name);
 }
@@ -51,10 +62,11 @@ void ElfReader::start_analyze_slot(QString file_name)
     clean_up_data();
     if (!file.open(QIODevice::ReadOnly))
     {
-        QMessageBox::warning(ui.centralWidget, MESSAGE_CAPTION, MESSAGE_OPEN_FILE_ERROR);
+        QMessageBox::warning(this, MESSAGE_CAPTION, MESSAGE_OPEN_FILE_ERROR);
         goto End;
     }
     file_data = file.readAll();
+    file.close();
     m_data = new char[file_data.size()];
     memcpy(m_data, file_data.data(), file_data.size());
     //检查文件合法性
@@ -64,6 +76,7 @@ void ElfReader::start_analyze_slot(QString file_name)
         goto End;
     }
     QObject::connect(ui.header_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(header_item_changed_slot(QTreeWidgetItem*, QTreeWidgetItem*)));
+    hexEdit->setData(file_data);
     parse_elf();
     init_header_tree();
 End:

@@ -12,8 +12,8 @@ find_package(Qt5Widgets)
 find_package(Qt5Core)
 find_package(Qt5Gui)
 
-file(GLOB SRC_FILES "./*.cpp")
-file(GLOB HEAD_FILES "./*.h")
+file(GLOB SRC_FILES "./*.cpp" "./qhexedit2/*.cpp")
+file(GLOB HEAD_FILES "./*.h" "./qhexedit2/*.h")
 file(GLOB UI_FILES "./*.ui")
 
 qt5_wrap_ui(WRAP_FILES ${UI_FILES})

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1064</width>
+    <width>1120</width>
     <height>829</height>
    </rect>
   </property>
@@ -150,6 +150,18 @@
         <number>1</number>
        </property>
        <widget class="QTreeWidget" name="info_tree">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="acceptDrops">
          <bool>false</bool>
         </property>
@@ -186,10 +198,23 @@
          </property>
         </column>
        </widget>
-       <widget class="QListWidget" name="hex">
+       <widget class="QWidget" name="hex" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>280</height>
+         </size>
+        </property>
         <property name="acceptDrops">
          <bool>false</bool>
         </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_2"/>
        </widget>
       </widget>
      </widget>

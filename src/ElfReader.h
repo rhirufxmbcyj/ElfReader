@@ -12,7 +12,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QByteArray>
-
+//hexedit
+#include "qhexedit2/qhexedit.h"
 typedef struct _elf_info_st
 {
     _elf_info_st()
@@ -28,6 +29,8 @@ typedef struct _elf_info_st
     int elf_shentsize;
     int elf_shnum;
     char *elf_shstr;
+    char *elf_dynstr;
+    char *elf_strtab;
 }elf_info_st;
 
 
@@ -40,9 +43,11 @@ public:
     char *m_data;
     elf_info_st m_info;
     Ui::ElfReader ui;
+    QHexEdit *hexEdit;
 protected:
     void dropEvent(QDropEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
+    void paintEvent(QPaintEvent *event);
 public slots:
     void pushButton_open_clicked();
     void pushButton_save_clicked();

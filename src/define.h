@@ -15,6 +15,7 @@
 #define        MESSAGE_FILE_FORMAT_ERROR      u8"该文件不是合法的ELF文件"
 #define        MESSAGE_NO_TYPE                u8"没有这种类型，请将文件及错误提交issue"
 #define        MESSAGE_TYPE_ERROR             u8"类型解析错误，请将文件及错误提交issue"
+#define        MESSAGE_HEX_ERROR              u8"十六进制编辑器无法读取文件内容，请将文件及错误提交issue"
 
 #define        TRUE                            1
 #define        FALSE                           0
