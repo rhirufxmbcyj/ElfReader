@@ -196,6 +196,7 @@ int ElfReader::init_section_header()
     if (m_info.elf_shnum == 0)
         return ELF_SUCCESS;
     QTreeWidgetItem *root = new QTreeWidgetItem(ui.header_tree);
+    char *sec_name = NULL;
     QString tmp;
     root->setText(0, "Section Header Table");
     root->setData(0, ITEM_DATA_ITEM_TYPE, ITEM_DATA_ELF_SECTION_HEADER);
@@ -203,7 +204,17 @@ int ElfReader::init_section_header()
     for (int i = 0; i < m_info.elf_shnum; i++)
     {
         //要加上section名
-        tmp.sprintf("Section Header Table[%d]", i);
+        if (m_info.elf_is_x64)
+        {
+            Elf64_Shdr *sec_hdr = (Elf64_Shdr*)(m_data + m_info.elf_shoff + i * m_info.elf_shentsize);
+            sec_name = sec_hdr->sh_name + m_info.elf_shstr;
+        }
+        else
+        {
+            Elf32_Shdr *sec_hdr = (Elf32_Shdr*)(m_data + m_info.elf_shoff + i * m_info.elf_shentsize);
+            sec_name = sec_hdr->sh_name + m_info.elf_shstr;
+        }
+        tmp.sprintf("Section Header Table[%d]\t%s", i,sec_name);
         QTreeWidgetItem *item = new QTreeWidgetItem(root);
         item->setText(0, tmp);
         item->setData(0, ITEM_DATA_ITEM_TYPE, ITEM_DATA_ELF_SECTION_ITEM);

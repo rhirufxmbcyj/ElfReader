@@ -13,7 +13,12 @@ void ELF_CAT(parse_elf)(void *pointer)
     pThis->m_info.elf_shoff = elf_header->e_shoff;
     pThis->m_info.elf_shentsize = elf_header->e_shentsize;
     pThis->m_info.elf_shnum = elf_header->e_shnum;
-    pThis->m_info.elf_shstrndx = elf_header->e_shstrndx;
+
+    //section header string节的offset
+    int shstr_off = elf_header->e_shoff + elf_header->e_shstrndx * elf_header->e_shentsize;
+    Elf_Shdr *shstr_header = (Elf_Shdr *)(pThis->m_data + shstr_off);
+    //拿到section header string的指针
+    pThis->m_info.elf_shstr = pThis->m_data + shstr_header->sh_offset;
 }
 
 int ELF_CAT(init_elf_header_info)(int offset, void *pointer)
@@ -603,11 +608,163 @@ int ELF_CAT(init_program_header_info)(int offset, void *pointer)
 int ELF_CAT(init_section_header_info)(int offset, void *pointer)
 {
     ElfReader *pThis = (ElfReader*)pointer;
-    Elf_Phdr *program_header = (Elf_Phdr*)(pThis->m_data + offset);
+    Elf_Shdr *section_header = (Elf_Shdr*)(pThis->m_data + offset);
     QTreeWidgetItem *root = NULL;
     QString tmp;
     int size = 0;
 
-    qDebug() << QString::number(offset,16);
+    pThis->ui.info_tree->clear();
+    root = new QTreeWidgetItem(pThis->ui.info_tree);
+    root->setText(0, "sh_name");
+    tmp = pThis->m_info.elf_shstr + section_header->sh_name;
+    tmp += "(0x" + QString::number(section_header->sh_name, 16) + ")";
+    root->setText(1, tmp);
+    root->setText(2, "0x" + QString::number(offset, 16));
+    size = sizeof(section_header->sh_name);
+    root->setText(3, QString::number(size));
+
+    root = new QTreeWidgetItem(pThis->ui.info_tree);
+    offset += size;
+    root->setText(0, "sh_type");
+    switch (section_header->sh_type)
+    {
+    case SHT_NULL:tmp = transform_string(SHT_NULL); break;
+    case SHT_PROGBITS:tmp = transform_string(SHT_PROGBITS); break;
+    case SHT_SYMTAB:tmp = transform_string(SHT_SYMTAB); break;
+    case SHT_STRTAB:tmp = transform_string(SHT_STRTAB); break;
+    case SHT_RELA:tmp = transform_string(SHT_RELA); break;
+    case SHT_HASH:tmp = transform_string(SHT_HASH); break;
+    case SHT_DYNAMIC:tmp = transform_string(SHT_DYNAMIC); break;
+    case SHT_NOTE:tmp = transform_string(SHT_NOTE); break;
+    case SHT_NOBITS:tmp = transform_string(SHT_NOBITS); break;
+    case SHT_REL:tmp = transform_string(SHT_REL); break;
+    case SHT_SHLIB:tmp = transform_string(SHT_SHLIB); break;
+    case SHT_DYNSYM:tmp = transform_string(SHT_DYNSYM); break;
+    case SHT_INIT_ARRAY:tmp = transform_string(SHT_INIT_ARRAY); break;
+    case SHT_FINI_ARRAY:tmp = transform_string(SHT_FINI_ARRAY); break;
+    case SHT_PREINIT_ARRAY:tmp = transform_string(SHT_PREINIT_ARRAY); break;
+    case SHT_GROUP:tmp = transform_string(SHT_GROUP); break;
+    case SHT_SYMTAB_SHNDX:tmp = transform_string(SHT_SYMTAB_SHNDX); break;
+    case SHT_NUM:tmp = transform_string(SHT_NUM); break;
+    case SHT_LOOS:tmp = transform_string(SHT_LOOS); break;
+    case SHT_GNU_ATTRIBUTES:tmp = transform_string(SHT_GNU_ATTRIBUTES); break;
+    case SHT_GNU_HASH:tmp = transform_string(SHT_GNU_HASH); break;
+    case SHT_GNU_LIBLIST:tmp = transform_string(SHT_GNU_LIBLIST); break;
+    case SHT_CHECKSUM:tmp = transform_string(SHT_CHECKSUM); break;
+    case SHT_LOSUNW:tmp = transform_string(SHT_LOSUNW); break;
+    //case SHT_SUNW_move:tmp = transform_string(SHT_SUNW_move); break;
+    case SHT_SUNW_COMDAT:tmp = transform_string(SHT_SUNW_COMDAT); break;
+    case SHT_SUNW_syminfo:tmp = transform_string(SHT_SUNW_syminfo); break;
+    case SHT_GNU_verdef:tmp = transform_string(SHT_GNU_verdef); break;
+    case SHT_GNU_verneed:tmp = transform_string(SHT_GNU_verneed); break;
+    case SHT_GNU_versym:tmp = transform_string(SHT_GNU_versym); break;
+        //case SHT_HISUNW:tmp = transform_string(SHT_HISUNW); break;
+        //case SHT_HIOS:tmp = transform_string(SHT_HIOS); break;
+    case SHT_LOPROC:tmp = transform_string(SHT_LOPROC); break;
+    case SHT_HIPROC:tmp = transform_string(SHT_HIPROC); break;
+    case SHT_LOUSER:tmp = transform_string(SHT_LOUSER); break;
+    case SHT_HIUSER:tmp = transform_string(SHT_HIUSER); break;
+    default:
+        assert(0);
+        QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);
+        break;
+    }
+    tmp += "(0x" + QString::number(section_header->sh_type, 16) + ")";
+    root->setText(1, tmp);
+    root->setText(2, "0x" + QString::number(offset,16));
+    size = sizeof(section_header->sh_type);
+    root->setText(3, QString::number(size));
+
+    root = new QTreeWidgetItem(pThis->ui.info_tree);
+    offset += size;
+    root->setText(0, "sh_flags");
+    tmp.clear();
+    if (section_header->sh_flags & SHF_WRITE)
+        tmp += "Write ";
+    if (section_header->sh_flags & SHF_ALLOC)
+        tmp += "Alloc";
+    if (section_header->sh_flags & SHF_EXECINSTR)
+        tmp += "Exec ";
+    if (section_header->sh_flags & SHF_MERGE)
+        tmp += "Merge ";
+    if (section_header->sh_flags & SHF_STRINGS)
+        tmp += "String ";
+    if (section_header->sh_flags & SHF_INFO_LINK)
+        tmp += "Info_Link ";
+    if (section_header->sh_flags & SHF_LINK_ORDER)
+        tmp += "Link Order ";
+    if (section_header->sh_flags & SHF_OS_NONCONFORMING)
+        tmp += "OS_NONCONFORMING ";
+    if (section_header->sh_flags & SHF_GROUP)
+        tmp += "GROUP ";
+    if (section_header->sh_flags & SHF_TLS)
+        tmp += "TLS ";
+    if (section_header->sh_flags & SHF_COMPRESSED)
+        tmp += "COMPRESSED ";
+    if (section_header->sh_flags & SHF_ORDERED)
+        tmp += "ORDERED ";
+    if (section_header->sh_flags & SHF_EXCLUDE)
+        tmp += "EXCLUDE ";
+    tmp += "(0x" + QString::number(section_header->sh_flags, 16) + ")";
+    root->setText(1, tmp);
+    root->setText(2, "0x" + QString::number(offset, 16));
+    size = sizeof(section_header->sh_flags);
+    root->setText(3, QString::number(size));
+
+    root = new QTreeWidgetItem(pThis->ui.info_tree);
+    offset += size;
+    root->setText(0, "sh_addr");
+    root->setText(1, "0x" + QString::number(section_header->sh_addr, 16));
+    root->setText(2, QString::number(offset));
+    size = sizeof(section_header->sh_addr);
+    root->setText(3, QString::number(size));
+
+    root = new QTreeWidgetItem(pThis->ui.info_tree);
+    offset += size;
+    root->setText(0, "sh_offset");
+    root->setText(1, "0x" + QString::number(section_header->sh_offset, 16));
+    root->setText(2, QString::number(offset));
+    size = sizeof(section_header->sh_offset);
+    root->setText(3, QString::number(size));
+
+    root = new QTreeWidgetItem(pThis->ui.info_tree);
+    offset += size;
+    root->setText(0, "sh_size");
+    root->setText(1, "0x" + QString::number(section_header->sh_size, 16));
+    root->setText(2, QString::number(offset));
+    size = sizeof(section_header->sh_size);
+    root->setText(3, QString::number(size));
+
+    root = new QTreeWidgetItem(pThis->ui.info_tree);
+    offset += size;
+    root->setText(0, "sh_link");
+    root->setText(1, QString::number(section_header->sh_link));
+    root->setText(2, QString::number(offset));
+    size = sizeof(section_header->sh_link);
+    root->setText(3, QString::number(size));
+
+    root = new QTreeWidgetItem(pThis->ui.info_tree);
+    offset += size;
+    root->setText(0, "sh_info");
+    root->setText(1, QString::number(section_header->sh_info));
+    root->setText(2, QString::number(offset));
+    size = sizeof(section_header->sh_info);
+    root->setText(3, QString::number(size));
+
+    root = new QTreeWidgetItem(pThis->ui.info_tree);
+    offset += size;
+    root->setText(0, "sh_addralign");
+    root->setText(1, QString::number(section_header->sh_addralign));
+    root->setText(2, QString::number(offset));
+    size = sizeof(section_header->sh_addralign);
+    root->setText(3, QString::number(size));
+
+    root = new QTreeWidgetItem(pThis->ui.info_tree);
+    offset += size;
+    root->setText(0, "sh_entsize");
+    root->setText(1, QString::number(section_header->sh_entsize));
+    root->setText(2, QString::number(offset));
+    size = sizeof(section_header->sh_entsize);
+    root->setText(3, QString::number(size));
     return 0;
 }

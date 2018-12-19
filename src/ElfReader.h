@@ -27,7 +27,7 @@ typedef struct _elf_info_st
     int elf_shoff;
     int elf_shentsize;
     int elf_shnum;
-    int elf_shstrndx;
+    char *elf_shstr;
 }elf_info_st;
 
 
