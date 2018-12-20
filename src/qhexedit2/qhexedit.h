@@ -149,6 +149,10 @@ public:
     */
     QHexEdit(QWidget *parent=0);
 
+    //自增接口
+    /*实现goto功能，并选中需要选择的内容*/
+    void JumpSelect(qint64 pos, qint64 size);
+
     // Access to data of qhexedit
 
     /*! Sets the data of QHexEdit. The QIODevice will be opened just before reading

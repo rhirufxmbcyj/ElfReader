@@ -56,6 +56,18 @@ QHexEdit::QHexEdit(QWidget *parent) : QAbstractScrollArea(parent)
 
 }
 
+void QHexEdit::JumpSelect(qint64 pos, qint64 size)
+{
+    if (pos > -1)
+    {
+        qint64 curPos = pos * 2;
+        setCursorPosition(curPos + size * 2);
+        resetSelection(curPos);
+        setSelection(curPos + size * 2);
+        ensureVisible();
+    }
+}
+
 QHexEdit::~QHexEdit()
 {
 }

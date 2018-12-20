@@ -76,6 +76,7 @@ void ElfReader::start_analyze_slot(QString file_name)
         goto End;
     }
     QObject::connect(ui.header_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(header_item_changed_slot(QTreeWidgetItem*, QTreeWidgetItem*)));
+    QObject::connect(ui.info_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(info_item_changed_slot(QTreeWidgetItem*, QTreeWidgetItem*)));
     hexEdit->setData(file_data);
     parse_elf();
     init_header_tree();
@@ -85,8 +86,11 @@ End:
 
 void ElfReader::header_item_changed_slot(QTreeWidgetItem *current_item, QTreeWidgetItem *pre_item)
 {
+    if (current_item == NULL)
+        return;
     int header_type = current_item->data(0, ITEM_DATA_ITEM_TYPE).toInt();
-    int offset = current_item->data(0, ITEM_DATA_ITEM_OFFSET).toInt();
+    qint64 offset = current_item->data(0, ITEM_DATA_ITEM_OFFSET).toLongLong();
+    qint64 size = current_item->data(0, ITEM_DATA_ITEM_SIZE).toLongLong();
     switch (header_type)
     {
     case ITEM_DATA_ELF_HEADER:
@@ -115,6 +119,16 @@ void ElfReader::header_item_changed_slot(QTreeWidgetItem *current_item, QTreeWid
         break;
     default:assert(0); break;
     }
+    hexEdit->JumpSelect(offset, size);
+}
+
+void ElfReader::info_item_changed_slot(QTreeWidgetItem *current_item, QTreeWidgetItem *pre_item)
+{
+    if (current_item == NULL)
+        return;
+    qint64 offset = current_item->text(2).toLongLong(nullptr, 16);
+    qint64 size = current_item->text(3).toLongLong();
+    hexEdit->JumpSelect(offset, size);
 }
 
 void ElfReader::clean_up_data()
@@ -180,6 +194,7 @@ int ElfReader::init_elf_header()
     root->setText(0,elf_header);
     root->setData(0, ITEM_DATA_ITEM_TYPE, ITEM_DATA_ELF_HEADER);
     root->setData(0, ITEM_DATA_ITEM_OFFSET, 0);
+    root->setData(0, ITEM_DATA_ITEM_SIZE, m_info.elf_ehsize);
     ui.header_tree->setCurrentItem(root);
     return ELF_SUCCESS;
 }
@@ -193,6 +208,7 @@ int ElfReader::init_program_header()
     root->setText(0, "Program Header Table");
     root->setData(0, ITEM_DATA_ITEM_TYPE, ITEM_DATA_ELF_PROGRAM_HEADER);
     root->setData(0, ITEM_DATA_ITEM_OFFSET, m_info.elf_phoff);
+    root->setData(0, ITEM_DATA_ITEM_SIZE, m_info.elf_phentsize * m_info.elf_phnum);
     for (int i = 0; i < m_info.elf_phnum; i++)
     {
         tmp.sprintf("Program Header Table[%d]", i);
@@ -200,6 +216,7 @@ int ElfReader::init_program_header()
         item->setText(0,tmp);
         item->setData(0, ITEM_DATA_ITEM_TYPE, ITEM_DATA_ELF_PROGRAM_ITEM);
         item->setData(0, ITEM_DATA_ITEM_OFFSET, m_info.elf_phoff + i * m_info.elf_phentsize);
+        item->setData(0, ITEM_DATA_ITEM_SIZE, m_info.elf_phentsize);
     }
     return ELF_SUCCESS;
 }
@@ -214,6 +231,7 @@ int ElfReader::init_section_header()
     root->setText(0, "Section Header Table");
     root->setData(0, ITEM_DATA_ITEM_TYPE, ITEM_DATA_ELF_SECTION_HEADER);
     root->setData(0, ITEM_DATA_ITEM_OFFSET, m_info.elf_shoff);
+    root->setData(0, ITEM_DATA_ITEM_SIZE, m_info.elf_shentsize * m_info.elf_shnum);
     for (int i = 0; i < m_info.elf_shnum; i++)
     {
         //要加上section名
@@ -232,6 +250,7 @@ int ElfReader::init_section_header()
         item->setText(0, tmp);
         item->setData(0, ITEM_DATA_ITEM_TYPE, ITEM_DATA_ELF_SECTION_ITEM);
         item->setData(0, ITEM_DATA_ITEM_OFFSET, m_info.elf_shoff + i * m_info.elf_shentsize);
+        item->setData(0, ITEM_DATA_ITEM_SIZE, m_info.elf_shentsize);
     }
     return ELF_SUCCESS;
 }

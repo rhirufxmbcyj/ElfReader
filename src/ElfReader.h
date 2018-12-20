@@ -22,6 +22,7 @@ typedef struct _elf_info_st
     }
     int elf_type;
     int elf_is_x64;
+    int elf_ehsize;
     int elf_phoff;
     int elf_phentsize;
     int elf_phnum;
@@ -53,6 +54,7 @@ public slots:
     void pushButton_save_clicked();
     void start_analyze_slot(QString file_name);
     void header_item_changed_slot(QTreeWidgetItem *current_item, QTreeWidgetItem *pre_item);
+    void info_item_changed_slot(QTreeWidgetItem *current_item, QTreeWidgetItem *pre_item);
 signals:
     void start_analyze(QString file_name);
 public:

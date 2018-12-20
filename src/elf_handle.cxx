@@ -13,6 +13,7 @@ void ELF_CAT(parse_elf)(void *pointer)
     pThis->m_info.elf_shoff = elf_header->e_shoff;
     pThis->m_info.elf_shentsize = elf_header->e_shentsize;
     pThis->m_info.elf_shnum = elf_header->e_shnum;
+    pThis->m_info.elf_ehsize = elf_header->e_ehsize;
 
     //section header string½ÚµÄoffset
     int shstr_off = elf_header->e_shoff + elf_header->e_shstrndx * elf_header->e_shentsize;
