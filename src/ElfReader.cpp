@@ -35,9 +35,8 @@ void ElfReader::dragEnterEvent(QDragEnterEvent *event)
 
 void ElfReader::paintEvent(QPaintEvent *event)
 {
-    //hexEdit->setFixedHeight(ui.hex->height());
-    hexEdit->setFixedSize(ui.hex->size());
-    qDebug() << hexEdit->size();
+    if(hexEdit->size() != ui.hex->size())
+        hexEdit->setFixedSize(ui.hex->size());
 }
 
 void ElfReader::pushButton_open_clicked()
