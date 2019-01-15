@@ -10,6 +10,10 @@ read/write elf info for windows
 - 支持内容修改
 - 多语言（暂未打算）
 
+##### 2019.01.16
+
+完成dynamic section的显示
+
 ##### 2018.12.20
 
 完成界面elf header、program header、section header的显示
