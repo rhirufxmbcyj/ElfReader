@@ -701,15 +701,15 @@ typedef struct
 
 /* Legal values for p_type (segment type).  */
 
-#define    PT_NULL        0        /* Program header table entry unused */
+#define PT_NULL        0        /* Program header table entry unused */
 #define PT_LOAD        1        /* Loadable program segment */
-#define PT_DYNAMIC    2        /* Dynamic linking information */
-#define PT_INTERP    3        /* Program interpreter */
+#define PT_DYNAMIC     2        /* Dynamic linking information */
+#define PT_INTERP      3        /* Program interpreter */
 #define PT_NOTE        4        /* Auxiliary information */
-#define PT_SHLIB    5        /* Reserved */
+#define PT_SHLIB       5        /* Reserved */
 #define PT_PHDR        6        /* Entry for header table itself */
-#define PT_TLS        7        /* Thread-local storage segment */
-#define    PT_NUM        8        /* Number of defined types */
+#define PT_TLS         7        /* Thread-local storage segment */
+#define PT_NUM         8        /* Number of defined types */
 #define PT_LOOS        0x60000000    /* Start of OS-specific */
 #define PT_GNU_EH_FRAME    0x6474e550    /* GCC .eh_frame_hdr segment */
 #define PT_GNU_STACK    0x6474e551    /* Indicates stack executability */

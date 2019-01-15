@@ -13,6 +13,10 @@ typedef    Elf32_Off     Elf_Off;
 typedef    Elf32_Addr    Elf_Addr;
 typedef    Elf32_Half    Elf_Half;
 typedef    Elf32_Word    Elf_Word;
+typedef    Elf32_Dyn     Elf_Dyn;
+
+
+
 
 #define    ELF_CAT(_name_)    elf32_##_name_
 
@@ -27,6 +31,7 @@ typedef    Elf64_Off     Elf_Off;
 typedef    Elf64_Addr    Elf_Addr;
 typedef    Elf64_Half    Elf_Half;
 typedef    Elf64_Word    Elf_Word;
+typedef    Elf64_Dyn     Elf_Dyn;
 
 #define    ELF_CAT(_name_)    elf64_##_name_
 
@@ -44,5 +49,8 @@ int elf64_init_program_header_info(int offset, void *pointer);
 
 int elf32_init_section_header_info(int offset, void *pointer);
 int elf64_init_section_header_info(int offset, void *pointer);
+
+int elf32_init_dynamic_section(int offset, void *pointer);
+int elf64_init_dynamic_section(int offset, void *pointer);
 
 #endif // !ELF_DEF_H

@@ -30,6 +30,8 @@
 #define        ITEM_DATA_ELF_PROGRAM_ITEM         3
 #define        ITEM_DATA_ELF_SECTION_HEADER       4
 #define        ITEM_DATA_ELF_SECTION_ITEM         5
+#define        ITEM_DATA_ELF_DYNAMIC_HEADER       6
+#define        ITEM_DATA_ELF_DYNAMIC_INFO         7
 
 #define        ITEM_DATA_ITEM_OFFSET              Qt::UserRole + 2
 #define        ITEM_DATA_ITEM_SIZE                Qt::UserRole + 3

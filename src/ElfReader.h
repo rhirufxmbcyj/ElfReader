@@ -29,6 +29,8 @@ typedef struct _elf_info_st
     int elf_shoff;
     int elf_shentsize;
     int elf_shnum;
+    int elf_dynoff;
+    int elf_dynsize;
     char *elf_shstr;
     char *elf_dynstr;
     char *elf_strtab;
@@ -58,6 +60,7 @@ public slots:
 signals:
     void start_analyze(QString file_name);
 public:
+    void init_info_header(int type);
     void clean_up_data();
     int check_file_format();
     void parse_elf();
@@ -66,6 +69,7 @@ public:
     int init_elf_header();
     int init_program_header();
     int init_section_header();
+    int init_dynamic_section();
 
 };
 

@@ -51,10 +51,8 @@ int ELF_CAT(init_elf_header_info)(int offset, void *pointer)
     case ELFCLASS32:tmp = transform_string(ELFCLASS32);break;
     case ELFCLASS64:tmp = transform_string(ELFCLASS64);break;
     case ELFCLASSNUM:tmp = transform_string(ELFCLASSNUM);break;
-    default:
-        assert(0); 
-        QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);
-        break;
+    default:assert(0); QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR); break;
+
     }
     tmp += "(" + QString::number(elf_header->e_ident[EI_CLASS]) + ")";
     item->setText(1, tmp);
@@ -69,10 +67,7 @@ int ELF_CAT(init_elf_header_info)(int offset, void *pointer)
     case ELFDATA2LSB:tmp = transform_string(ELFDATA2LSB);break;
     case ELFDATA2MSB:tmp = transform_string(ELFDATA2MSB);break;
     case ELFDATANUM: tmp = transform_string(ELFDATANUM);break;
-    default:
-        assert(0);
-        QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);
-        break;
+    default:assert(0); QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR); break;
     }
     tmp += "(" + QString::number(elf_header->e_ident[EI_DATA]) + ")";
     item->setText(1, tmp);
@@ -86,10 +81,7 @@ int ELF_CAT(init_elf_header_info)(int offset, void *pointer)
     case EV_NONE:tmp = transform_string(EV_NONE);break;
     case EV_CURRENT:tmp = transform_string(EV_CURRENT);break;
     case EV_NUM:tmp = transform_string(EV_NUM);break;
-    default:
-        assert(0);
-        QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);
-        break;
+    default:assert(0); QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR); break;
     }
     tmp += "(" + QString::number(elf_header->e_ident[EI_VERSION]) + ")";
     item->setText(1, tmp);
@@ -116,10 +108,7 @@ int ELF_CAT(init_elf_header_info)(int offset, void *pointer)
     case ELFOSABI_ARM_AEABI:tmp = transform_string(ELFOSABI_ARM_AEABI);break;
     case ELFOSABI_ARM:tmp = transform_string(ELFOSABI_ARM);break;
     case ELFOSABI_STANDALONE:tmp = transform_string(ELFOSABI_STANDALONE);break;
-    default:
-        assert(0);
-        QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);
-        break;
+    default:assert(0);QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);break;
     }
     tmp += "(" + QString::number(elf_header->e_ident[EI_OSABI]) + ")";
     item->setText(1, tmp);
@@ -147,10 +136,7 @@ int ELF_CAT(init_elf_header_info)(int offset, void *pointer)
     case ET_HIOS:tmp = transform_string(ET_HIOS);break;
     case ET_LOPROC:tmp = transform_string(ET_LOPROC);break;
     case ET_HIPROC:tmp = transform_string(ET_HIPROC);break;
-    default:
-        assert(0);
-        QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);
-        break;
+    default:assert(0);QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);break;
     }
     tmp += "(" + QString::number(elf_header->e_type) + ")";
     root->setText(1, tmp);
@@ -341,10 +327,7 @@ int ELF_CAT(init_elf_header_info)(int offset, void *pointer)
     case EM_AMDGPU:tmp = transform_string(EM_AMDGPU);break;
     case EM_RISCV:tmp = transform_string(EM_RISCV);break;
     case EM_BPF:tmp = transform_string(EM_BPF);break;
-    default:
-        assert(0);
-        QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);
-        break;
+    default:assert(0);QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);break;
     }
     tmp += "(" + QString::number(elf_header->e_machine) + ")";
     root->setText(1, tmp);
@@ -359,10 +342,7 @@ int ELF_CAT(init_elf_header_info)(int offset, void *pointer)
     {
     case EV_NONE:tmp = transform_string(EV_NONE);break;
     case EV_CURRENT:tmp = transform_string(EV_CURRENT);break;
-    default:
-        assert(0);
-        QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);
-        break;
+    default:assert(0);QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);break;
     }
     tmp += "(" + QString::number(elf_header->e_version) + ")";
     root->setText(1, tmp);
@@ -495,10 +475,7 @@ int ELF_CAT(init_program_header_info)(int offset, void *pointer)
     case PT_HIOS:tmp = transform_string(PT_HIOS);break;
     case PT_LOPROC:tmp = transform_string(PT_LOPROC);break;
     case PT_HIPROC:tmp = transform_string(PT_HIPROC);break;
-    default:
-        assert(0);
-        QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);
-        break;
+    default:assert(0);QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);break;
     }
     tmp += "(0x" + QString::number(program_header->p_type,16) + ")";
     root->setText(1, tmp);
@@ -519,10 +496,7 @@ int ELF_CAT(init_program_header_info)(int offset, void *pointer)
     case PF_R | PF_X:tmp = "PF_Read_Exec"; break;
     case PF_W | PF_X:tmp = "PF_Write_Exec"; break;
     case PF_R | PF_W | PF_X:tmp = "PF_Read_Write_Exec"; break;
-    default:
-        assert(0);
-        QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);
-        break;
+    default:assert(0);QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);break;
     }
     tmp += "(" + QString::number(program_header->p_flags) + ")";
     root->setText(1, tmp);
@@ -584,10 +558,7 @@ int ELF_CAT(init_program_header_info)(int offset, void *pointer)
     case PF_R | PF_X:tmp = "PF_Read_Exec"; break;
     case PF_W | PF_X:tmp = "PF_Write_Exec"; break;
     case PF_R | PF_W | PF_X:tmp = "PF_Read_Write_Exec"; break;
-    default:
-        assert(0);
-        QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);
-        break;
+    default:assert(0);QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);break;
     }
     tmp += "(" + QString::number(program_header->p_flags) + ")";
     root->setText(1, tmp);
@@ -665,10 +636,7 @@ int ELF_CAT(init_section_header_info)(int offset, void *pointer)
     case SHT_HIPROC:tmp = transform_string(SHT_HIPROC); break;
     case SHT_LOUSER:tmp = transform_string(SHT_LOUSER); break;
     case SHT_HIUSER:tmp = transform_string(SHT_HIUSER); break;
-    default:
-        assert(0);
-        QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);
-        break;
+    default:assert(0);QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR);break;
     }
     tmp += "(0x" + QString::number(section_header->sh_type, 16) + ")";
     root->setText(1, tmp);
@@ -716,7 +684,7 @@ int ELF_CAT(init_section_header_info)(int offset, void *pointer)
     offset += size;
     root->setText(0, "sh_addr");
     root->setText(1, "0x" + QString::number(section_header->sh_addr, 16));
-    root->setText(2, QString::number(offset));
+    root->setText(2, "0x" + QString::number(offset,16));
     size = sizeof(section_header->sh_addr);
     root->setText(3, QString::number(size));
 
@@ -724,7 +692,7 @@ int ELF_CAT(init_section_header_info)(int offset, void *pointer)
     offset += size;
     root->setText(0, "sh_offset");
     root->setText(1, "0x" + QString::number(section_header->sh_offset, 16));
-    root->setText(2, QString::number(offset));
+    root->setText(2, "0x" + QString::number(offset, 16));
     size = sizeof(section_header->sh_offset);
     root->setText(3, QString::number(size));
 
@@ -732,7 +700,7 @@ int ELF_CAT(init_section_header_info)(int offset, void *pointer)
     offset += size;
     root->setText(0, "sh_size");
     root->setText(1, "0x" + QString::number(section_header->sh_size, 16));
-    root->setText(2, QString::number(offset));
+    root->setText(2, "0x" + QString::number(offset, 16));
     size = sizeof(section_header->sh_size);
     root->setText(3, QString::number(size));
 
@@ -740,7 +708,7 @@ int ELF_CAT(init_section_header_info)(int offset, void *pointer)
     offset += size;
     root->setText(0, "sh_link");
     root->setText(1, QString::number(section_header->sh_link));
-    root->setText(2, QString::number(offset));
+    root->setText(2, "0x" + QString::number(offset, 16));
     size = sizeof(section_header->sh_link);
     root->setText(3, QString::number(size));
 
@@ -748,7 +716,7 @@ int ELF_CAT(init_section_header_info)(int offset, void *pointer)
     offset += size;
     root->setText(0, "sh_info");
     root->setText(1, QString::number(section_header->sh_info));
-    root->setText(2, QString::number(offset));
+    root->setText(2, "0x" + QString::number(offset, 16));
     size = sizeof(section_header->sh_info);
     root->setText(3, QString::number(size));
 
@@ -756,7 +724,7 @@ int ELF_CAT(init_section_header_info)(int offset, void *pointer)
     offset += size;
     root->setText(0, "sh_addralign");
     root->setText(1, QString::number(section_header->sh_addralign));
-    root->setText(2, QString::number(offset));
+    root->setText(2, "0x" + QString::number(offset, 16));
     size = sizeof(section_header->sh_addralign);
     root->setText(3, QString::number(size));
 
@@ -764,8 +732,112 @@ int ELF_CAT(init_section_header_info)(int offset, void *pointer)
     offset += size;
     root->setText(0, "sh_entsize");
     root->setText(1, QString::number(section_header->sh_entsize));
-    root->setText(2, QString::number(offset));
+    root->setText(2, "0x" + QString::number(offset, 16));
     size = sizeof(section_header->sh_entsize);
     root->setText(3, QString::number(size));
+    return 0;
+}
+
+int ELF_CAT(init_dynamic_section)(int offset, void *pointer)
+{
+    ElfReader *pThis = (ElfReader*)pointer;
+    QTreeWidgetItem *root = NULL;
+    QString tmp;
+    Elf_Dyn *dyn = (Elf_Dyn *)(pThis->m_data + offset);
+    int i = 0;
+    pThis->ui.info_tree->clear();
+    while (dyn->d_tag != DT_NULL)
+    {
+        root = new QTreeWidgetItem(pThis->ui.info_tree);
+        root->setData(0, ITEM_DATA_ITEM_TYPE, ITEM_DATA_ELF_DYNAMIC_INFO);
+        root->setData(0, ITEM_DATA_ITEM_OFFSET, offset + i * sizeof(Elf_Dyn));
+        root->setData(0, ITEM_DATA_ITEM_SIZE, sizeof(Elf_Dyn));
+        root->setText(0, "0x" + QString::number(dyn->d_tag, 16));
+        switch (dyn->d_tag)
+        {
+        case DT_NEEDED:        tmp = transform_string(DT_NEEDED); break;
+        case DT_PLTRELSZ:      tmp = transform_string(DT_PLTRELSZ); break;
+        case DT_PLTGOT:        tmp = transform_string(DT_PLTGOT); break;
+        case DT_HASH:          tmp = transform_string(DT_HASH); break;
+        case DT_STRTAB:        tmp = transform_string(DT_STRTAB); break;
+        case DT_SYMTAB:        tmp = transform_string(DT_SYMTAB); break;
+        case DT_RELA:          tmp = transform_string(DT_RELA); break;
+        case DT_RELASZ:        tmp = transform_string(DT_RELASZ); break;
+        case DT_RELAENT:       tmp = transform_string(DT_RELAENT); break;
+        case DT_STRSZ:         tmp = transform_string(DT_STRSZ); break;
+        case DT_SYMENT:        tmp = transform_string(DT_SYMENT); break;
+        case DT_INIT:          tmp = transform_string(DT_INIT); break;
+        case DT_FINI:          tmp = transform_string(DT_FINI); break;
+        case DT_SONAME:        tmp = transform_string(DT_SONAME); break;
+        case DT_RPATH:         tmp = transform_string(DT_RPATH); break;
+        case DT_SYMBOLIC:      tmp = transform_string(DT_SYMBOLIC); break;
+        case DT_REL:           tmp = transform_string(DT_REL); break;
+        case DT_RELSZ:         tmp = transform_string(DT_RELSZ); break;
+        case DT_RELENT:        tmp = transform_string(DT_RELENT); break;
+        case DT_PLTREL:        tmp = transform_string(DT_PLTREL); break;
+        case DT_DEBUG:         tmp = transform_string(DT_DEBUG); break;
+        case DT_TEXTREL:       tmp = transform_string(DT_TEXTREL); break;
+        case DT_JMPREL:        tmp = transform_string(DT_JMPREL); break;
+        case DT_BIND_NOW:      tmp = transform_string(DT_BIND_NOW); break;
+        case DT_INIT_ARRAY:    tmp = transform_string(DT_INIT_ARRAY); break;
+        case DT_FINI_ARRAY:    tmp = transform_string(DT_FINI_ARRAY); break;
+        case DT_INIT_ARRAYSZ:  tmp = transform_string(DT_INIT_ARRAYSZ); break;
+        case DT_FINI_ARRAYSZ:  tmp = transform_string(DT_FINI_ARRAYSZ); break;
+        case DT_RUNPATH:       tmp = transform_string(DT_RUNPATH); break;
+        case DT_FLAGS:         tmp = transform_string(DT_FLAGS); break;
+        case DT_ENCODING:      tmp = transform_string(DT_ENCODING); break;
+        case DT_PREINIT_ARRAYSZ:tmp = transform_string(DT_PREINIT_ARRAYSZ); break;
+        case DT_SYMTAB_SHNDX:  tmp = transform_string(DT_SYMTAB_SHNDX); break;
+        case DT_NUM:           tmp = transform_string(DT_NUM); break;
+        case DT_LOOS:          tmp = transform_string(DT_LOOS); break;
+        case DT_HIOS:          tmp = transform_string(DT_HIOS); break;
+        case DT_LOPROC:        tmp = transform_string(DT_LOPROC); break;
+        case DT_HIPROC:        tmp = transform_string(DT_HIPROC); break;
+        case DT_VALRNGLO:      tmp = transform_string(DT_VALRNGLO); break;
+        case DT_GNU_PRELINKED: tmp = transform_string(DT_GNU_PRELINKED); break;
+        case DT_GNU_CONFLICTSZ:tmp = transform_string(DT_GNU_CONFLICTSZ); break;
+        case DT_GNU_LIBLISTSZ: tmp = transform_string(DT_GNU_LIBLISTSZ); break;
+        case DT_CHECKSUM:      tmp = transform_string(DT_CHECKSUM); break;
+        case DT_PLTPADSZ:      tmp = transform_string(DT_PLTPADSZ); break;
+        case DT_MOVEENT:       tmp = transform_string(DT_MOVEENT); break;
+        case DT_MOVESZ:        tmp = transform_string(DT_MOVESZ); break;
+        case DT_FEATURE_1:      tmp = transform_string(DT_FEATURE_1); break;
+        case DT_POSFLAG_1:      tmp = transform_string(DT_POSFLAG_1); break;
+        case DT_SYMINSZ:       tmp = transform_string(DT_SYMINSZ); break;
+        case DT_SYMINENT:      tmp = transform_string(DT_SYMINENT); break;
+        case DT_ADDRRNGLO:     tmp = transform_string(DT_ADDRRNGLO); break;
+        case DT_GNU_HASH:      tmp = transform_string(DT_GNU_HASH); break;
+        case DT_TLSDESC_PLT:   tmp = transform_string(DT_TLSDESC_PLT); break;
+        case DT_TLSDESC_GOT:   tmp = transform_string(DT_TLSDESC_GOT); break;
+        case DT_GNU_CONFLICT:  tmp = transform_string(DT_GNU_CONFLICT); break;
+        case DT_GNU_LIBLIST:   tmp = transform_string(DT_GNU_LIBLIST); break;
+        case DT_CONFIG:        tmp = transform_string(DT_CONFIG); break;
+        case DT_DEPAUDIT:      tmp = transform_string(DT_DEPAUDIT); break;
+        case DT_AUDIT:         tmp = transform_string(DT_AUDIT); break;
+        case DT_PLTPAD:        tmp = transform_string(DT_PLTPAD); break;
+        case DT_MOVETAB:       tmp = transform_string(DT_MOVETAB); break;
+        case DT_SYMINFO:       tmp = transform_string(DT_SYMINFO); break;
+        case DT_VERSYM:        tmp = transform_string(DT_VERSYM); break;
+        case DT_RELACOUNT:     tmp = transform_string(DT_RELACOUNT); break;
+        case DT_RELCOUNT:      tmp = transform_string(DT_RELCOUNT); break;
+        case DT_VERDEF:        tmp = transform_string(DT_VERDEF); break;
+        case DT_VERDEFNUM:     tmp = transform_string(DT_VERDEFNUM); break;
+        case DT_VERNEED:       tmp = transform_string(DT_VERNEED); break;
+        case DT_VERNEEDNUM:    tmp = transform_string(DT_VERNEEDNUM); break;
+        default:assert(0); QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR); break;
+        }
+        root->setText(1, tmp);
+        if (dyn->d_tag == DT_NEEDED)
+        {
+            char *lib_name = pThis->m_info.elf_dynstr + dyn->d_un.d_val;
+            root->setText(2, lib_name);
+        }
+        else
+        {
+            root->setText(2, "0x" + QString::number(dyn->d_un.d_val, 16));
+        }
+        dyn++;
+        i++;
+    }
     return 0;
 }
