@@ -24,17 +24,18 @@
 #define        ELF_INVALID_FORMAT             -1
 
 //TreeWidget setDataÓÃµ½µÄºê
-#define        ITEM_DATA_ITEM_TYPE                Qt::UserRole + 1
-#define        ITEM_DATA_ELF_HEADER               1
-#define        ITEM_DATA_ELF_PROGRAM_HEADER       2
-#define        ITEM_DATA_ELF_PROGRAM_ITEM         3
-#define        ITEM_DATA_ELF_SECTION_HEADER       4
-#define        ITEM_DATA_ELF_SECTION_ITEM         5
-#define        ITEM_DATA_ELF_DYNAMIC_HEADER       6
-#define        ITEM_DATA_ELF_DYNAMIC_INFO         7
-
-#define        ITEM_DATA_ITEM_OFFSET              Qt::UserRole + 2
-#define        ITEM_DATA_ITEM_SIZE                Qt::UserRole + 3
+#define        ITEM_DATA_ITEM_TYPE                  Qt::UserRole + 1
+#define        ITEM_DATA_ITEM_OFFSET                Qt::UserRole + 2
+#define        ITEM_DATA_ITEM_SIZE                  Qt::UserRole + 3
+#define        ITEM_DATA_ELF_HEADER                 Qt::UserRole + 4
+#define        ITEM_DATA_ELF_PROGRAM_HEADER         Qt::UserRole + 5
+#define        ITEM_DATA_ELF_PROGRAM_ITEM           Qt::UserRole + 6
+#define        ITEM_DATA_ELF_SECTION_HEADER         Qt::UserRole + 7
+#define        ITEM_DATA_ELF_SECTION_ITEM           Qt::UserRole + 8
+#define        ITEM_DATA_ELF_DYNAMIC_HEADER         Qt::UserRole + 9
+#define        ITEM_DATA_ELF_DYNAMIC_INFO           Qt::UserRole + 10
+#define        ITEM_DATA_ELF_SYMTAB_HEADER          Qt::UserRole + 11
+#define        ITEM_DATA_ELF_SYMTAB_ITEM            Qt::UserRole + 12
 
 
 

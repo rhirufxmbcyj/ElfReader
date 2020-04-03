@@ -6,8 +6,11 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
+# set(CMAKE_PREFIX_PATH "C:\\Qt\\Qt5.9.9\\5.9.9\\msvc2015\\")
 # 用来搜索qt的各种库 不调用find_package可能会导致后边链接不通过
 # linux或mac下还需要单独设置上qt的路径 find_package才能找到对应的库
+# windows下设置好QT环境变量就不需要上边的set
+
 find_package(Qt5Widgets)
 find_package(Qt5Core)
 find_package(Qt5Gui)

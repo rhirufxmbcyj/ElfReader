@@ -841,3 +841,111 @@ int ELF_CAT(init_dynamic_section)(int offset, void *pointer)
     }
     return 0;
 }
+
+static void init_symtab_header_info_sub(ElfReader *pThis, Elf_Sym *sym, int *offset,int *size)
+{
+    QTreeWidgetItem *root = NULL;
+    QString tmp;
+    root = new QTreeWidgetItem(pThis->ui.info_tree);
+    *offset += *size;
+    root->setText(0, "st_info");
+    unsigned char bind = ELF32_ST_BIND(sym->st_info);
+    unsigned char type = ELF32_ST_TYPE(sym->st_info);
+    switch (bind)
+    {
+    case STB_LOCAL:tmp = transform_string(STB_LOCAL); break;
+    case STB_GLOBAL:tmp = transform_string(STB_GLOBAL); break;
+    case STB_WEAK:tmp = transform_string(STB_WEAK); break;
+    case STB_NUM:tmp = transform_string(STB_NUM); break;
+    case STB_LOOS:tmp = transform_string(STB_LOOS); break;
+        //case STB_GNU_UNIQUE:tmp = transform_string(STB_GNU_UNIQUE); break;
+    case STB_HIOS:tmp = transform_string(STB_HIOS); break;
+    case STB_LOPROC:tmp = transform_string(STB_LOPROC); break;
+    case STB_HIPROC:tmp = transform_string(STB_HIPROC); break;
+    default:assert(0); QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR); break;
+    }
+    tmp += " | ";
+    switch (type)
+    {
+    case STT_NOTYPE:tmp = transform_string(STT_NOTYPE); break;
+    case STT_OBJECT:tmp = transform_string(STT_OBJECT); break;
+    case STT_FUNC:tmp = transform_string(STT_FUNC); break;
+    case STT_SECTION:tmp = transform_string(STT_SECTION); break;
+    case STT_FILE:tmp = transform_string(STT_FILE); break;
+    case STT_COMMON:tmp = transform_string(STT_COMMON); break;
+    case STT_TLS:tmp = transform_string(STT_TLS); break;
+    case STT_NUM:tmp = transform_string(STT_NUM); break;
+    case STT_LOOS:tmp = transform_string(STT_LOOS); break;
+        //case STT_GNU_IFUNC:tmp = transform_string(STT_GNU_IFUNC); break;
+    case STT_HIOS:tmp = transform_string(STT_HIOS); break;
+    case STT_LOPROC:tmp = transform_string(STT_LOPROC); break;
+    case STT_HIPROC:tmp = transform_string(STT_HIPROC); break;
+    default:assert(0); QMessageBox::information(pThis, MESSAGE_CAPTION, MESSAGE_TYPE_ERROR); break;
+    }
+    root->setText(1, tmp);
+    root->setText(2, "0x" + QString::number(*offset, 16));
+    *size = sizeof(sym->st_info);
+    root->setText(3, QString::number(*size));
+
+    root = new QTreeWidgetItem(pThis->ui.info_tree);
+    *offset += *size;
+    root->setText(0, "st_other");
+    root->setText(1, "" + QString::number(sym->st_other, 10));
+    root->setText(2, "0x" + QString::number(*offset, 16));
+    *size = sizeof(sym->st_other);
+    root->setText(3, QString::number(*size));
+
+    root = new QTreeWidgetItem(pThis->ui.info_tree);
+    *offset += *size;
+    root->setText(0, "st_shndx");
+    root->setText(1, "" + QString::number(sym->st_shndx, 10));
+    root->setText(2, "0x" + QString::number(*offset, 16));
+    *size = sizeof(sym->st_shndx);
+    root->setText(3, QString::number(*size));
+}
+
+int ELF_CAT(init_symtab_header_info)(int offset, void *pointer)
+{
+    ElfReader *pThis = (ElfReader*)pointer;
+    QTreeWidgetItem *root = NULL;
+    QString tmp;
+    Elf_Sym *sym = (Elf_Sym *)(pThis->m_data + offset);
+    int size = 0;
+    pThis->ui.info_tree->clear();
+
+    root = new QTreeWidgetItem(pThis->ui.info_tree);
+    offset += size;
+    root->setText(0, "st_name");
+    char *sym_str_tab = (char *)pThis->get_section_data(pThis->m_info.elf_symtab_link);
+    tmp = sym_str_tab + sym->st_name;
+    tmp += "(0x" + QString::number(sym->st_name, 16) + ")";
+    root->setText(1, tmp);
+    root->setText(2, "0x" + QString::number(offset, 16));
+    size = sizeof(sym->st_name);
+    root->setText(3, QString::number(size));
+
+#ifdef ELF64
+    init_symtab_header_info_sub(pThis, sym, &offset, &size);
+#endif
+
+    root = new QTreeWidgetItem(pThis->ui.info_tree);
+    offset += size;
+    root->setText(0, "st_value");
+    root->setText(1, "0x" + QString::number(sym->st_value, 16));
+    root->setText(2, "0x" + QString::number(offset, 16));
+    size = sizeof(sym->st_value);
+    root->setText(3, QString::number(size));
+
+    root = new QTreeWidgetItem(pThis->ui.info_tree);
+    offset += size;
+    root->setText(0, "st_size");
+    root->setText(1, "" + QString::number(sym->st_size, 10));
+    root->setText(2, "0x" + QString::number(offset, 16));
+    size = sizeof(sym->st_size);
+    root->setText(3, QString::number(size));
+
+#ifdef ELF32
+    init_symtab_header_info_sub(pThis, sym, &offset, &size);
+#endif
+    return 0;
+}

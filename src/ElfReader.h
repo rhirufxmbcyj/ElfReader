@@ -23,17 +23,29 @@ typedef struct _elf_info_st
     int elf_type;
     int elf_is_x64;
     int elf_ehsize;
+
     int elf_phoff;
     int elf_phentsize;
     int elf_phnum;
+
     int elf_shoff;
     int elf_shentsize;
     int elf_shnum;
+
     int elf_dynoff;
     int elf_dynsize;
+
     char *elf_shstr;
     char *elf_dynstr;
     char *elf_strtab;
+
+    int elf_symtab_off;
+    int elf_symtab_link;
+    int elf_symtab_size;
+
+    int elf_dynsym_off;
+    int elf_dynsym_link;
+    int elf_dynsym_size;
 }elf_info_st;
 
 
@@ -70,7 +82,9 @@ public:
     int init_program_header();
     int init_section_header();
     int init_dynamic_section();
-
+    void *get_section_data(int index);
+    int init_symbol_section();
+    int init_dynsym_section();
 };
 
 #endif

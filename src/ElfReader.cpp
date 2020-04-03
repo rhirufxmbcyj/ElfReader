@@ -107,6 +107,7 @@ void ElfReader::header_item_changed_slot(QTreeWidgetItem *current_item, QTreeWid
             elf32_init_program_header_info(offset, this);
         break;
     case ITEM_DATA_ELF_SECTION_HEADER:
+    case ITEM_DATA_ELF_SYMTAB_HEADER:
         //不处理
         break;
     case ITEM_DATA_ELF_SECTION_ITEM:
@@ -121,6 +122,12 @@ void ElfReader::header_item_changed_slot(QTreeWidgetItem *current_item, QTreeWid
             elf64_init_dynamic_section(offset, this);
         else
             elf32_init_dynamic_section(offset, this);
+        break;
+    case ITEM_DATA_ELF_SYMTAB_ITEM:
+        if (m_info.elf_is_x64)
+            elf64_init_symtab_header_info(offset, this);
+        else
+            elf32_init_symtab_header_info(offset, this);
         break;
     default:assert(0); break;
     }
@@ -214,6 +221,12 @@ int ElfReader::init_header_tree()
     ret = init_dynamic_section();
     if (ret != ELF_SUCCESS)
         goto End;
+    ret = init_symbol_section();
+    if (ret != ELF_SUCCESS)
+        goto End;
+    ret = init_dynsym_section();
+    if (ret != ELF_SUCCESS)
+        goto End;
 End:
     return ret;
 }
@@ -261,7 +274,7 @@ int ElfReader::init_section_header()
     if (m_info.elf_shnum == 0)
         return ELF_SUCCESS;
     QTreeWidgetItem *root = new QTreeWidgetItem(ui.header_tree);
-    char *sec_name = NULL;
+    QString sec_name;
     QString tmp;
     root->setText(0, "Section Header Table");
     root->setData(0, ITEM_DATA_ITEM_TYPE, ITEM_DATA_ELF_SECTION_HEADER);
@@ -270,35 +283,31 @@ int ElfReader::init_section_header()
     for (int i = 0; i < m_info.elf_shnum; i++)
     {
         //要加上section名
-        if (m_info.elf_is_x64)
+        Elf64_Shdr *sec_hdr_64 = (Elf64_Shdr*)(m_data + m_info.elf_shoff + i * m_info.elf_shentsize);
+        Elf32_Shdr *sec_hdr_32 = (Elf32_Shdr*)(m_data + m_info.elf_shoff + i * m_info.elf_shentsize);
+        sec_name = (m_info.elf_is_x64 ? sec_hdr_64->sh_name : sec_hdr_32->sh_name) + m_info.elf_shstr;
+        if (sec_name == ".dynamic")
         {
-            Elf64_Shdr *sec_hdr = (Elf64_Shdr*)(m_data + m_info.elf_shoff + i * m_info.elf_shentsize);
-            sec_name = sec_hdr->sh_name + m_info.elf_shstr;
-            if (strcmp(sec_name, ".dynamic") == 0)
-            {
-                m_info.elf_dynoff = sec_hdr->sh_offset;
-                m_info.elf_dynsize = sec_hdr->sh_size;
-            }
-            else if (strcmp(sec_name, ".dynstr") == 0)
-            {
-                m_info.elf_dynstr = m_data + sec_hdr->sh_offset;
-            }
+            m_info.elf_dynoff = m_info.elf_is_x64 ? sec_hdr_64->sh_offset : sec_hdr_32->sh_offset;
+            m_info.elf_dynsize = m_info.elf_is_x64 ? sec_hdr_64->sh_size : sec_hdr_32->sh_size;
         }
-        else
+        else if (sec_name == ".dynstr")
         {
-            Elf32_Shdr *sec_hdr = (Elf32_Shdr*)(m_data + m_info.elf_shoff + i * m_info.elf_shentsize);
-            sec_name = sec_hdr->sh_name + m_info.elf_shstr;
-            if (strcmp(sec_name, ".dynamic") == 0)
-            {
-                m_info.elf_dynoff = sec_hdr->sh_offset;
-                m_info.elf_dynsize = sec_hdr->sh_size;
-            }
-            else if (strcmp(sec_name, ".dynstr") == 0)
-            {
-                m_info.elf_dynstr = m_data + sec_hdr->sh_offset;
-            }
+            m_info.elf_dynstr = m_data + (m_info.elf_is_x64 ? sec_hdr_64->sh_offset: sec_hdr_32->sh_offset);
         }
-        tmp.sprintf("Section Header Table[%d]\t%s", i,sec_name);
+        else if (sec_name == ".symtab")
+        {
+            m_info.elf_symtab_off = m_info.elf_is_x64 ? sec_hdr_64->sh_offset : sec_hdr_32->sh_offset;
+            m_info.elf_symtab_link = m_info.elf_is_x64 ? sec_hdr_64->sh_link : sec_hdr_32->sh_link;
+            m_info.elf_symtab_size = m_info.elf_is_x64 ? sec_hdr_64->sh_size : sec_hdr_32->sh_size;
+        }
+        else if (sec_name == ".dynsym")
+        {
+            m_info.elf_dynsym_off = m_info.elf_is_x64 ? sec_hdr_64->sh_offset : sec_hdr_32->sh_offset;
+            m_info.elf_dynsym_size = m_info.elf_is_x64 ? sec_hdr_64->sh_size : sec_hdr_32->sh_size;
+            m_info.elf_dynsym_link = m_info.elf_is_x64 ? sec_hdr_64->sh_link : sec_hdr_32->sh_link;;
+        }
+        tmp.sprintf("Section Header Table[%d]\t%s", i,sec_name.toLatin1().data());
         QTreeWidgetItem *item = new QTreeWidgetItem(root);
         item->setText(0, tmp);
         item->setData(0, ITEM_DATA_ITEM_TYPE, ITEM_DATA_ELF_SECTION_ITEM);
@@ -314,9 +323,80 @@ int ElfReader::init_dynamic_section()
         return ELF_SUCCESS;
     QTreeWidgetItem *root = new QTreeWidgetItem(ui.header_tree);
     QString tmp;
-    root->setText(0, "Dynamic Section Detail");
+    root->setText(0, ".dynamic Detail");
     root->setData(0, ITEM_DATA_ITEM_TYPE, ITEM_DATA_ELF_DYNAMIC_HEADER);
     root->setData(0, ITEM_DATA_ITEM_OFFSET, m_info.elf_dynoff);   
     root->setData(0, ITEM_DATA_ITEM_SIZE, m_info.elf_dynsize);
+    return ELF_SUCCESS;
+}
+
+
+void *ElfReader::get_section_data(int index)
+{
+    Elf64_Shdr *sec_hdr_64 = (Elf64_Shdr*)(m_data + m_info.elf_shoff + index * m_info.elf_shentsize);
+    Elf32_Shdr *sec_hdr_32 = (Elf32_Shdr*)(m_data + m_info.elf_shoff + index * m_info.elf_shentsize);
+    int sec_offset = m_info.elf_is_x64 ? sec_hdr_64->sh_offset : sec_hdr_32->sh_offset;
+    return (void *)(m_data + sec_offset);
+}
+
+int ElfReader::init_symbol_section()
+{
+    if (m_info.elf_symtab_off == 0)
+        return ELF_SUCCESS;
+    QTreeWidgetItem *root = new QTreeWidgetItem(ui.header_tree);
+    QString tmp;
+    root->setText(0, ".symtab Section Detail");
+    root->setData(0, ITEM_DATA_ITEM_TYPE, ITEM_DATA_ELF_SYMTAB_HEADER);
+    root->setData(0, ITEM_DATA_ITEM_OFFSET, m_info.elf_symtab_off);
+    root->setData(0, ITEM_DATA_ITEM_SIZE, m_info.elf_symtab_size);
+    QString sym_name;
+    char *strtab = (char *)get_section_data(m_info.elf_symtab_link);
+    int sym_entsize = m_info.elf_is_x64 ? sizeof(Elf64_Sym) : sizeof(Elf32_Sym);
+    int sym_num = m_info.elf_is_x64 ? (m_info.elf_symtab_size / sizeof(Elf64_Sym)) : (m_info.elf_symtab_size / sizeof(Elf32_Sym));  
+    for (int i = 0; i < sym_num; i++)
+    {
+        Elf64_Sym *sym_hdr_64 = (Elf64_Sym *)(m_data + m_info.elf_symtab_off + i * sym_entsize);
+        Elf32_Sym *sym_hdr_32 = (Elf32_Sym *)(m_data + m_info.elf_symtab_off + i * sym_entsize);
+        sym_name = (m_info.elf_is_x64 ? sym_hdr_64->st_name : sym_hdr_32->st_name) + strtab;
+        if (sym_name.size() == 0)
+            sym_name = "Undefined";
+        tmp.sprintf(".symtab Table[%d]\t%s", i, sym_name.toLatin1().data());
+        QTreeWidgetItem *item = new QTreeWidgetItem(root);
+        item->setText(0, tmp);
+        item->setData(0, ITEM_DATA_ITEM_TYPE, ITEM_DATA_ELF_SYMTAB_ITEM);
+        item->setData(0, ITEM_DATA_ITEM_OFFSET, m_info.elf_symtab_off + i * sym_entsize);
+        item->setData(0, ITEM_DATA_ITEM_SIZE, sym_entsize);
+    }
+    return ELF_SUCCESS;
+}
+
+int ElfReader::init_dynsym_section()
+{
+    if (m_info.elf_dynsym_off == 0)
+        return ELF_SUCCESS;
+    QTreeWidgetItem *root = new QTreeWidgetItem(ui.header_tree);
+    QString tmp;
+    root->setText(0, ".dynsym Section Detail");
+    root->setData(0, ITEM_DATA_ITEM_TYPE, ITEM_DATA_ELF_SYMTAB_HEADER);
+    root->setData(0, ITEM_DATA_ITEM_OFFSET, m_info.elf_dynsym_off);
+    root->setData(0, ITEM_DATA_ITEM_SIZE, m_info.elf_dynsym_size);
+    QString sym_name;
+    char *strtab = (char *)get_section_data(m_info.elf_dynsym_link);
+    int sym_entsize = m_info.elf_is_x64 ? sizeof(Elf64_Sym) : sizeof(Elf32_Sym);
+    int sym_num = m_info.elf_is_x64 ? (m_info.elf_dynsym_size / sizeof(Elf64_Sym)) : (m_info.elf_dynsym_size / sizeof(Elf32_Sym));
+    for (int i = 0; i < sym_num; i++)
+    {
+        Elf64_Sym *sym_hdr_64 = (Elf64_Sym *)(m_data + m_info.elf_dynsym_off + i * sym_entsize);
+        Elf32_Sym *sym_hdr_32 = (Elf32_Sym *)(m_data + m_info.elf_dynsym_off + i * sym_entsize);
+        sym_name = (m_info.elf_is_x64 ? sym_hdr_64->st_name : sym_hdr_32->st_name) + strtab;
+        if (sym_name.size() == 0)
+            sym_name = "Undefined";
+        tmp.sprintf(".dynsym Table[%d]\t%s", i, sym_name.toLatin1().data());
+        QTreeWidgetItem *item = new QTreeWidgetItem(root);
+        item->setText(0, tmp);
+        item->setData(0, ITEM_DATA_ITEM_TYPE, ITEM_DATA_ELF_SYMTAB_ITEM);
+        item->setData(0, ITEM_DATA_ITEM_OFFSET, m_info.elf_dynsym_off + i * sym_entsize);
+        item->setData(0, ITEM_DATA_ITEM_SIZE, sym_entsize);
+    }
     return ELF_SUCCESS;
 }
